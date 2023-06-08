@@ -1,0 +1,127 @@
+Here is a possible solution in C:
+
+```
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#define BLOCK_SIZE 1024
+
+#define NUM_BLOCKS 16
+
+#define NUM_INODES 8
+
+#define MIN_FILE_SIZE 1024
+
+int disk[NUM_BLOCKS][BLOCK_SIZE];
+
+int get_free_blocks(int num_blocks) {
+
+  int i, j, count;
+
+  for (i = NUM_INODES; i < NUM_BLOCKS - num_blocks + 1; i++) {
+
+    count = 0;
+
+    for (j = i; j < i + num_blocks; j++) {
+
+      if (disk[j][0] != 0) {
+
+        break;
+
+      }
+
+      count++;
+
+    }
+
+    if (count == num_blocks) {
+
+      return i;
+
+    }
+
+  }
+
+  return -1;
+
+}
+
+void allocate_blocks(int start_block, int num_blocks) {
+
+  int i;
+
+  for (i = start_block; i < start_block + num_blocks; i++) {
+
+    disk[i][0] = 1;
+
+  }
+
+}
+
+void deallocate_blocks(int start_block, int num_blocks) {
+
+  int i;
+
+  for (i = start_block; i < start_block + num_blocks; i++) {
+
+    disk[i][0] = 0;
+
+  }
+
+}
+
+int main() {
+
+  int num_blocks, start_block, i, j;
+
+  // initialize the disk
+
+  for (i = 0; i < NUM_BLOCKS; i++) {
+
+    for (j = 0; j < BLOCK_SIZE; j++) {
+
+      disk[i][j] = 0;
+
+    }
+
+  }
+
+  // allocate iNodes
+
+  for (i = 0; i < NUM_INODES; i++) {
+
+    disk[i][0] = 1;
+
+  }
+
+  // allocate a file of size 1 KB
+
+  num_blocks = 1;
+
+  start_block = get_free_blocks(num_blocks);
+
+  if (start_block == -1) {
+
+    printf("Error: Not enough contiguous blocks available.\n");
+
+    exit(1);
+
+  }
+
+  allocate_blocks(start_block, num_blocks);
+
+  printf("Allocated %d blocks starting from block %d.\n", num_blocks, start_block);
+
+  // allocate a file of size 8 KB
+
+  num_blocks = 8;
+
+  start_block = get_free_blocks(num_blocks);
+
+  if (start_block == -1) {
+
+    printf("Error: Not enough contiguous blocks available.\n");
+
+    exit(1)
