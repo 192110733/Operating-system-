@@ -1,0 +1,126 @@
+
+
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#include <limits.h>
+
+#define MAX_TRACKS 100
+
+#define MAX_REQUESTS 100
+
+int tracks[MAX_TRACKS];
+
+int requests[MAX_REQUESTS];
+
+int num_tracks, num_requests;
+
+int abs(int x) {
+
+  return x >= 0 ? x : -x;
+
+}
+
+int find_shortest(int head) {
+
+  int i, shortest = INT_MAX, index = -1;
+
+  for (i = 0; i < num_requests; i++) {
+
+    if (requests[i] != -1 && abs(requests[i] - head) < shortest) {
+
+      shortest = abs(requests[i] - head);
+
+      index = i;
+
+    }
+
+  }
+
+  return index;
+
+}
+
+int main() {
+
+  int i, head, total_head_movement = 0, current_track;
+
+  // read input
+
+  printf("Enter the number of tracks: ");
+
+  scanf("%d", &num_tracks);
+
+  printf("Enter the number of requests: ");
+
+  scanf("%d", &num_requests);
+
+  printf("Enter the track positions: ");
+
+  for (i = 0; i < num_tracks; i++) {
+
+    scanf("%d", &tracks[i]);
+
+  }
+
+  printf("Enter the track requests: ");
+
+  for (i = 0; i < num_requests; i++) {
+
+    scanf("%d", &requests[i]);
+
+  }
+
+  // initialize head position and mark all requests as unprocessed
+
+  printf("Enter the initial head position: ");
+
+  scanf("%d", &head);
+
+  for (i = 0; i < num_requests; i++) {
+
+    requests[i] = 0;
+
+  }
+
+  // process requests
+
+  while (1) {
+
+    // find the shortest request from the current head position
+
+    i = find_shortest(head);
+
+    if (i == -1) {
+
+      // no more requests to process
+
+      break;
+
+    }
+
+    // move the head to the requested track and mark the request as processed
+
+    current_track = requests[i];
+
+    requests[i] = -1;
+
+    total_head_movement += abs(head - current_track);
+
+    head = current_track;
+
+  }
+
+  // print the results
+
+  printf("Total head movement: %d\n", total_head_movement);
+
+  printf("Average head movement: %.2f\n", (float) total_head_movement / num_requests);
+
+  return 0;
+
+}
+
+```
